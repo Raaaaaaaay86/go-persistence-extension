@@ -6,24 +6,24 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var _ = contract.Ultimate[Entity[uint], uint](&UltimateRepository[Entity[uint], uint]{})
+var _ = contract.Ultimate[any, uint](&UltimateRepository[any, uint]{})
 
 type UltimateRepository[T any, Q contract.Identifier] struct {
 	contract.Basic[T, Q]
 	contract.Paginated[T, Q]
 }
 
-func NewUltimateRepository(
+func NewUltimateRepository[T any, Q contract.Identifier](
 	db *gorm.DB,
-) *UltimateRepository[Entity[uint], uint] {
-	return &UltimateRepository[Entity[uint], uint]{
-		NewBasicRepository(db),
-		NewPaginationRepository(db),
+) *UltimateRepository[T,Q] {
+	return &UltimateRepository[T, Q]{
+		NewBasicRepository[T, Q](db),
+		NewPaginationRepository[T, Q](db),
 	}
 }
 
-func NewEagerUltimateRepository(
+func NewEagerUltimateRepository[T any, Q contract.Identifier](
 	db *gorm.DB,
-) *UltimateRepository[Entity[uint], uint] {
-	return NewUltimateRepository(db.Preload(clause.Associations))
+) *UltimateRepository[T, Q] {
+	return NewUltimateRepository[T, Q](db.Preload(clause.Associations))
 }

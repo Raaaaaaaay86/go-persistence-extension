@@ -14,12 +14,12 @@ type PaginationRepository[T any, Q contract.Identifier] struct {
 	db *gorm.DB
 }
 
-func NewPaginationRepository(db *gorm.DB) *PaginationRepository[any, uint] {
-	return &PaginationRepository[any, uint]{db}
+func NewPaginationRepository[T any, Q contract.Identifier](db *gorm.DB) *PaginationRepository[T, Q] {
+	return &PaginationRepository[T, Q]{db}
 }
 
-func NewEagerPaginationRepository(db *gorm.DB) *PaginationRepository[any, uint] {
-	return &PaginationRepository[any, uint]{db.Preload(clause.Associations)}
+func NewEagerPaginationRepository[T any, Q contract.Identifier](db *gorm.DB) *PaginationRepository[T, Q] {
+	return &PaginationRepository[T, Q]{db.Preload(clause.Associations)}
 }
 
 // FindAll implements contract.Pagination.

@@ -18,7 +18,7 @@ func NewBasicRepository[T any, Q contract.Identifier](db *gorm.DB) *BasicReposit
 	return &BasicRepository[T, Q]{db}
 }
 
-func NewEagerBasicRepository[T any, Q uint](db *gorm.DB) *BasicRepository[T, Q] {
+func NewEagerBasicRepository[T any, Q contract.Identifier](db *gorm.DB) *BasicRepository[T, Q] {
 	return &BasicRepository[T, Q]{db.Preload(clause.Associations)}
 }
 

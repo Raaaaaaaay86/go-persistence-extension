@@ -1,6 +1,6 @@
 module github.com/raaaaaaaay86/go-persistence-extension
 
-go 1.21.5
+go 1.21
 
 require (
 	golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8

@@ -8,18 +8,18 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var _ = contract.Paginated[GormEntity[uint], uint](&PaginationRepository[GormEntity[uint], uint]{})
+var _ = contract.Paginated[Entity[uint], uint](&PaginationRepository[Entity[uint], uint]{})
 
 type PaginationRepository[T any, Q contract.Identifier] struct {
 	db *gorm.DB
 }
 
-func NewPaginationRepository(db *gorm.DB) *PaginationRepository[GormEntity[uint], uint] {
-	return &PaginationRepository[GormEntity[uint], uint]{db}
+func NewPaginationRepository(db *gorm.DB) *PaginationRepository[Entity[uint], uint] {
+	return &PaginationRepository[Entity[uint], uint]{db}
 }
 
-func NewEagerPaginationRepository(db *gorm.DB) *PaginationRepository[GormEntity[uint], uint] {
-	return &PaginationRepository[GormEntity[uint], uint]{db.Preload(clause.Associations)}
+func NewEagerPaginationRepository(db *gorm.DB) *PaginationRepository[Entity[uint], uint] {
+	return &PaginationRepository[Entity[uint], uint]{db.Preload(clause.Associations)}
 }
 
 // FindAll implements contract.Pagination.

@@ -8,18 +8,18 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var _ = contract.Basic[GormEntity[uint], uint](&BasicRepository[GormEntity[uint], uint]{})
+var _ = contract.Basic[Entity[uint], uint](&BasicRepository[Entity[uint], uint]{})
 
 type BasicRepository[T any, Q contract.Identifier] struct {
 	db *gorm.DB
 }
 
-func NewBasicRepository(db *gorm.DB) *BasicRepository[GormEntity[uint], uint] {
-	return &BasicRepository[GormEntity[uint], uint]{db}
+func NewBasicRepository(db *gorm.DB) *BasicRepository[Entity[uint], uint] {
+	return &BasicRepository[Entity[uint], uint]{db}
 }
 
-func NewEagerBasicRepository(db *gorm.DB) *BasicRepository[GormEntity[uint], uint] {
-	return &BasicRepository[GormEntity[uint], uint]{db.Preload(clause.Associations)}
+func NewEagerBasicRepository(db *gorm.DB) *BasicRepository[Entity[uint], uint] {
+	return &BasicRepository[Entity[uint], uint]{db.Preload(clause.Associations)}
 }
 
 // Create implements contract.CRUD.

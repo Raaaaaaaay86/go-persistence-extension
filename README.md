@@ -19,10 +19,10 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 ```
 You'll get basic data operation methods immediately! Save lots of time to write boilerplate code of repository layer!
 ```go
-uc.UserRepository.GetBy(ctx, &entity.User{Username: "johndoe"})
-uc.UserRepository.GetById(ctx, userId)
-uc.UserRepository.DeleteById(ctx, userId)
-uc.UserRepository.FindAll(ctx, limit)
+UserRepository.GetBy(ctx, &entity.User{Username: "johndoe"})
+UserRepository.GetById(ctx, userId)
+UserRepository.DeleteById(ctx, userId)
+UserRepository.FindAll(ctx, limit)
 // ...
 // .....
 ```

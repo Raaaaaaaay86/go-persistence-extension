@@ -163,7 +163,7 @@ func (g *BasicRepository[T, Q]) Update(ctx context.Context, entity *T) (int64, e
 // Like() will return matched records with like condition.
 //	// Return all rows which username contains "jordan"
 //	results, err := Like(ctx, &User{Username: "jordan"})
-func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T) ([]*T, error) {
+func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T, limit int) ([]*T, error) {
 	var results []*T
 
 	fields, err := util.ParseNoneZeroFields(reflect.ValueOf(entity))
@@ -181,7 +181,7 @@ func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T) ([]*T, error
 		db = db.Where(fmt.Sprintf("%s LIKE ?", field.ColumnName), likeStr)
 	}
 
-	if err := db.Find(&results).Error; err != nil {
+	if err := db.Limit(limit).Find(&results).Error; err != nil {
 		return results, err
 	}
 

@@ -214,13 +214,14 @@ func (s *BasicOperationTestSuite) Test_CreateAndUpdateByStruct() {
 }
 
 func (s *BasicOperationTestSuite) Test_Like() {
-	users, err := s.UserRepository.Like(context.Background(), entity.User{Username: "%user%"})
+	users, err := s.UserRepository.Like(context.Background(), entity.User{Username: "%user%"}, -1)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, 10)
 
-	users, err = s.UserRepository.Like(context.Background(), entity.User{Username: "%user%", Email: "%mail%"})
+	limit := 5
+	users, err = s.UserRepository.Like(context.Background(), entity.User{Username: "%user%", Email: "%mail%"}, limit)
 	assert.NoError(s.T(), err)
-	assert.Len(s.T(), users, 10)
+	assert.Len(s.T(), users, limit)
 }
 
 func TestRunBasicOperationTestSuite(t *testing.T) {

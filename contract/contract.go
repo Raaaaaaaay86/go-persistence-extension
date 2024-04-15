@@ -10,13 +10,13 @@ type Ultimate[T any, Q Identifier] interface {
 }
 
 type Basic[T any, Q Identifier] interface {
-	GetBy(ctx context.Context, entity T) (T, error)
-	GetById(ctx context.Context, id Q) (T, error)
-	FindBy(ctx context.Context, entity T, limit int) ([]T, error)
-	FindAll(ctx context.Context, limit int) ([]T, error)
-	Create(ctx context.Context, entity T) error
-	Update(ctx context.Context, entity T) (int64, error)
-	Delete(ctx context.Context, entity T) (int64, error)
+	GetBy(ctx context.Context, entity T) (*T, error)
+	GetById(ctx context.Context, id Q) (*T, error)
+	FindBy(ctx context.Context, entity T, limit int) ([]*T, error)
+	FindAll(ctx context.Context, limit int) ([]*T, error)
+	Create(ctx context.Context, entity *T) error
+	Update(ctx context.Context, entity *T) (int64, error)
+	Delete(ctx context.Context, entity *T) (int64, error)
 	DeleteById(ctx context.Context, id Q) (int64, error)
 }
 

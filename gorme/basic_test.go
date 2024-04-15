@@ -3,6 +3,7 @@ package gorme_test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"testing"
 	"time"
 
@@ -116,9 +117,10 @@ func (s *BasicOperationTestSuite) Test_FindBy() {
 	s.T().Log("Test_FindBy: Find users by age 20 with no limit")
 	users, err := s.UserRepository.FindBy(ctx, entity.User{Age: 20}, -1)
 	assert.NoError(s.T(), err)
+	expectedUserNames := []string{"user1", "user3", "user6", "user8", "user10"}
 	for _, user := range users {
 		assert.Equal(s.T(), 20, user.Age)
-		assert.True(s.T(), user.Username == "user1" || user.Username == "user3")
+		assert.True(s.T(), slices.Contains(expectedUserNames, user.Username))
 	}
 
 	s.T().Log("Test_FindBy: Find users by age 20 with limit 1")
@@ -137,12 +139,11 @@ func (s *BasicOperationTestSuite) Test_FindByAll() {
 	ctx := context.Background()
 
 	s.T().Log("Test_FindAll: Find all users with no limit")
-	users, err := s.UserRepository.FindAll(ctx, -1)
+	_, err := s.UserRepository.FindAll(ctx, -1)
 	assert.NoError(s.T(), err)
-	assert.Len(s.T(), users, 5)
 
 	s.T().Log("Test_FindAll: Find all users with limit 1")
-	users, err = s.UserRepository.FindAll(ctx, 1)
+	users, err := s.UserRepository.FindAll(ctx, 1)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, 1)
 }

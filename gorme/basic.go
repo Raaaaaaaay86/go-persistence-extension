@@ -2,8 +2,11 @@ package gorme
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 
 	"github.com/raaaaaaaay86/go-persistence-extension/contract"
+	"github.com/raaaaaaaay86/go-persistence-extension/gorme/util"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -154,4 +157,29 @@ func (g *BasicRepository[T, Q]) Update(ctx context.Context, entity *T) (int64, e
 	}
 
 	return affectedCount, err
+}
+
+func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T) ([]*T, error) {
+	var results []*T
+
+	fields, err := util.ParseNoneZeroFields(reflect.ValueOf(entity))
+	if err != nil {
+		return results, err
+	}
+
+	db := g.db.WithContext(ctx)
+
+	for _, field := range fields {
+		likeStr, ok := field.Value.(string)
+		if !ok {
+			continue
+		}
+		db = db.Where(fmt.Sprintf("%s LIKE ?", field.ColumnName), likeStr)
+	}
+
+	if err := db.Find(&results).Error; err != nil {
+		return results, err
+	}
+
+	return results, nil
 }

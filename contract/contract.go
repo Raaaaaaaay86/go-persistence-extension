@@ -18,6 +18,7 @@ type Basic[T any, Q Identifier] interface {
 	Update(ctx context.Context, entity *T) (int64, error)
 	Delete(ctx context.Context, entity *T) (int64, error)
 	DeleteById(ctx context.Context, id Q) (int64, error)
+	Like(ctx context.Context, entity T) ([]*T, error)
 }
 
 type Paginated[T any, Q Identifier] interface {

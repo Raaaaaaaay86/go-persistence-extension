@@ -32,7 +32,7 @@ func (s *BasicOperationTestSuite) Setup() error {
 		return err
 	}
 
-	s.UserRepository = repository.NewUserRepository(db)
+	s.UserRepository = repository.NewUserRepository(db.Debug())
 
 	return nil
 }
@@ -211,6 +211,16 @@ func (s *BasicOperationTestSuite) Test_CreateAndUpdateByStruct() {
 	queryUser, err := s.UserRepository.GetById(ctx, user.ID)
 	assert.NoError(s.T(), err)
 	assert.Equal(s.T(), 11, queryUser.Age)
+}
+
+func (s *BasicOperationTestSuite) Test_Like() {
+	users, err := s.UserRepository.Like(context.Background(), entity.User{Username: "%user%"})
+	assert.NoError(s.T(), err)
+	assert.Len(s.T(), users, 10)
+
+	users, err = s.UserRepository.Like(context.Background(), entity.User{Username: "%user%", Email: "%mail%"})
+	assert.NoError(s.T(), err)
+	assert.Len(s.T(), users, 10)
 }
 
 func TestRunBasicOperationTestSuite(t *testing.T) {

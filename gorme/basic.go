@@ -159,6 +159,10 @@ func (g *BasicRepository[T, Q]) Update(ctx context.Context, entity *T) (int64, e
 	return affectedCount, err
 }
 
+// Update implements contract.CRUD.
+// Like() will return matched records with like condition.
+//	// Return all rows which username contains "jordan"
+//	results, err := Like(ctx, &User{Username: "jordan"})
 func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T) ([]*T, error) {
 	var results []*T
 

@@ -1,0 +1,13 @@
+version: "3.1"
+services:
+  postgres_gpe:
+    image: postgres:16.2
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_USER: gpe_test
+      POSTGRES_DB: gpe
+    ports:
+      - "5439:5432"
+    volumes:
+      - ./migration/dump.sql:/docker-entrypoint-initdb.d/dump.sql

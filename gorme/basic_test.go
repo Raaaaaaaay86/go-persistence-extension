@@ -10,6 +10,7 @@ import (
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/entity"
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/repository"
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/util"
+	"github.com/raaaaaaaay86/go-persistence-extension/mark"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/gorm"
@@ -45,7 +46,7 @@ func (s *BasicOperationTestSuite) Test_GetById() {
 	assert.Equal(s.T(), uint(1), user.ID)
 	assert.Equal(s.T(), "user1", user.Username)
 
-	_, err = s.UserRepository.GetById(ctx, 999) 
+	_, err = s.UserRepository.GetById(ctx, 999)
 	assert.ErrorIs(s.T(), gorm.ErrRecordNotFound, err)
 }
 
@@ -54,14 +55,14 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 
 	type GetByTestCase struct {
 		TestDescription string
-		Condition entity.User
-		ValidateFn func(*testing.T, *entity.User, error)
+		Condition       entity.User
+		ValidateFn      func(*testing.T, *entity.User, error)
 	}
 
 	table := []GetByTestCase{
 		{
 			TestDescription: "Get user by birthday",
-			Condition: entity.User{Birthday: time.Date(2000, 3, 3, 0, 0, 0, 0, time.UTC)},
+			Condition:       entity.User{Birthday: time.Date(2000, 3, 3, 0, 0, 0, 0, time.UTC)},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -70,7 +71,7 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get user by username",
-			Condition: entity.User{Username: "user1"},
+			Condition:       entity.User{Username: "user1"},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -79,7 +80,7 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get user by age",
-			Condition: entity.User{Age: 20},
+			Condition:       entity.User{Age: 20},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -88,7 +89,7 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get user by age and username",
-			Condition: entity.User{Age: 20, Username: "user1"},
+			Condition:       entity.User{Age: 20, Username: "user1"},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -97,7 +98,7 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get non-exist user by username",
-			Condition: entity.User{Username: "non-exist"},
+			Condition:       entity.User{Username: "non-exist"},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.ErrorIs(t, gorm.ErrRecordNotFound, err)
 			},
@@ -153,10 +154,10 @@ func (s *BasicOperationTestSuite) Test_CreateAndDeleteById() {
 
 	s.T().Log("Test_CreateAndDelete: Create user")
 	user := entity.User{
-		Username: fmt.Sprintf( "delete_by_id_%d", time.Now().Unix()),
-		Email: "delete_by_id@mail.com",
+		Username: fmt.Sprintf("delete_by_id_%d", time.Now().Unix()),
+		Email:    "delete_by_id@mail.com",
 		Birthday: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
-		Age: 10,
+		Age:      10,
 	}
 	err := s.UserRepository.Create(ctx, &user)
 	assert.NoError(s.T(), err)
@@ -173,10 +174,10 @@ func (s *BasicOperationTestSuite) Test_CreateAndDeleteByStruct() {
 
 	s.T().Log("Test_CreateAndDeleteByStruct: Create user")
 	user := entity.User{
-		Username: fmt.Sprintf( "delete_by_struct_%d", time.Now().Unix()),
-		Email: "delete_by_struct@mail.com",
+		Username: fmt.Sprintf("delete_by_struct_%d", time.Now().Unix()),
+		Email:    "delete_by_struct@mail.com",
 		Birthday: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
-		Age: 10,
+		Age:      10,
 	}
 	err := s.UserRepository.Create(ctx, &user)
 	assert.NoError(s.T(), err)
@@ -193,10 +194,10 @@ func (s *BasicOperationTestSuite) Test_CreateAndUpdateByStruct() {
 
 	s.T().Log("Test_CreateAndUpdateByStruct: Create user")
 	user := entity.User{
-		Username: fmt.Sprintf( "update_by_struct_%d", time.Now().Unix()),
-		Email: "update_by_struct@mail.com",
+		Username: fmt.Sprintf("update_by_struct_%d", time.Now().Unix()),
+		Email:    "update_by_struct@mail.com",
 		Birthday: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
-		Age: 10,
+		Age:      10,
 	}
 	err := s.UserRepository.Create(ctx, &user)
 	assert.NoError(s.T(), err)
@@ -222,6 +223,26 @@ func (s *BasicOperationTestSuite) Test_Like() {
 	users, err = s.UserRepository.Like(context.Background(), entity.User{Username: "%user%", Email: "%mail%"}, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)
+}
+
+func (s *BasicOperationTestSuite) Test_FindBefore() {
+	ctx := context.Background()
+	condition := entity.User{Birthday: mark.TargetTime}
+	before_at := time.Date(2000, 5, 6, 0, 0, 0, 0, time.UTC)
+
+	users, err := s.UserRepository.FindBefore(ctx, condition, before_at, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.True(s.T(), user.Birthday.Before(before_at))
+	}
+
+	limit := 1
+	users, err = s.UserRepository.FindBefore(ctx, condition, before_at, limit)
+	assert.NoError(s.T(), err)
+	assert.Len(s.T(), users, limit)
+	for _, user := range users {
+		assert.True(s.T(), user.Birthday.Before(before_at))
+	}
 }
 
 func TestRunBasicOperationTestSuite(t *testing.T) {

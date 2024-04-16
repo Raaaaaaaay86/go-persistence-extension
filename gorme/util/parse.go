@@ -2,6 +2,7 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -11,6 +12,36 @@ type FieldInformation struct {
 	Name       string
 	ColumnName string
 	Value      any
+	ReflectKind reflect.Kind
+	ReflectType reflect.Type
+}
+
+func ParseTargetField(entity any,targetType reflect.Type) (*FieldInformation, error) {
+	fields, err := ParseNoneZeroFields(reflect.ValueOf(entity))
+	if err != nil {
+		return nil, err
+	}
+
+	if len(fields) == 0 {
+		return nil, errors.New("no target field specified")
+	}
+
+	var targetField *FieldInformation
+	for i, count := 0, 0; i < len(fields); i++ {
+		if fields[i].ReflectType.Name() == targetType.Name() {
+			if count > 0 {
+				return nil, errors.New("ambiguous target field. there are at most one target field allowed")
+			}
+			targetField = fields[i]
+			count++
+		}
+	}
+
+	if targetField == nil {
+		return nil, fmt.Errorf("no target field found. expected field type (%s)", targetType.Name())
+	}
+
+	return targetField, nil
 }
 
 func ParseNoneZeroFields(v reflect.Value) ([]*FieldInformation, error) {
@@ -32,6 +63,8 @@ func ParseNoneZeroFields(v reflect.Value) ([]*FieldInformation, error) {
 		info := &FieldInformation{
 			Name:  v.Type().Field(i).Name,
 			Value: field.Interface(),
+			ReflectKind: v.Type().Field(i).Type.Kind(),
+			ReflectType: reflect.TypeOf(field.Interface()),
 		}
 
 		tagInfo := ParseGormTag(v.Type().Field(i).Tag.Get("gorm"))

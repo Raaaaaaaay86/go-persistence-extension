@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"time"
 
 	"github.com/raaaaaaaay86/go-persistence-extension/contract"
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/util"
@@ -183,6 +184,24 @@ func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T, limit int) (
 
 	if err := db.Limit(limit).Find(&results).Error; err != nil {
 		return results, err
+	}
+
+	return results, nil
+}
+
+func (g *BasicRepository[T, Q]) FindBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error) {
+	f := fmt.Sprintf
+	var results []*T
+
+	field, err := util.ParseTargetField(entity, reflect.TypeOf(time.Time{}))
+	if err != nil {
+		return results, err
+	}
+
+	db := g.db.WithContext(ctx)
+
+	if tx := db.Where(f("%s < ?", field.ColumnName), before).Limit(limit).Find(&results); tx.Error != nil {
+		return results, tx.Error
 	}
 
 	return results, nil

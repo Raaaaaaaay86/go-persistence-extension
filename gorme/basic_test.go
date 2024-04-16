@@ -215,10 +215,12 @@ func (s *BasicOperationTestSuite) Test_CreateAndUpdateByStruct() {
 }
 
 func (s *BasicOperationTestSuite) Test_Like() {
+	s.T().Log("Test_Like: Find users by username")
 	users, err := s.UserRepository.Like(context.Background(), entity.User{Username: "%user%"}, -1)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, 10)
 
+	s.T().Log("Test_Like: Find users by username and email")
 	limit := 5
 	users, err = s.UserRepository.Like(context.Background(), entity.User{Username: "%user%", Email: "%mail%"}, limit)
 	assert.NoError(s.T(), err)
@@ -230,6 +232,7 @@ func (s *BasicOperationTestSuite) Test_FindBefore() {
 	condition := entity.User{Birthday: mark.TargetTime}
 	before_at := time.Date(2000, 5, 6, 0, 0, 0, 0, time.UTC)
 
+	s.T().Log("Test_FindBefore: Find users before 2000-05-06 with not limit")
 	users, err := s.UserRepository.FindBefore(ctx, condition, before_at, -1)
 	assert.NoError(s.T(), err)
 	for _, user := range users {
@@ -237,6 +240,7 @@ func (s *BasicOperationTestSuite) Test_FindBefore() {
 	}
 
 	limit := 1
+	s.T().Logf("Test_FindBefore: Find users before 2000-05-06 with limit %d", limit)
 	users, err = s.UserRepository.FindBefore(ctx, condition, before_at, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)
@@ -250,6 +254,7 @@ func (s *BasicOperationTestSuite) Test_FindAfter() {
 	condition := entity.User{Birthday: mark.TargetTime}
 	before_at := time.Date(2000, 5, 6, 0, 0, 0, 0, time.UTC)
 
+	s.T().Log("Test_FindAfter: Find users after 2000-05-06 with not limit")
 	users, err := s.UserRepository.FindAfter(ctx, condition, before_at, -1)
 	assert.NoError(s.T(), err)
 	for _, user := range users {
@@ -257,6 +262,7 @@ func (s *BasicOperationTestSuite) Test_FindAfter() {
 	}
 
 	limit := 1
+	s.T().Logf("Test_FindAfter: Find users after 2000-05-06 with limit %d", limit)
 	users, err = s.UserRepository.FindAfter(ctx, condition, before_at, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)

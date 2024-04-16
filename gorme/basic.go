@@ -190,7 +190,7 @@ func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T, limit int) (
 	return results, nil
 }
 
-func (g *BasicRepository[T, Q]) FindBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error) {
+func (g *BasicRepository[T, Q]) FindTimeBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error) {
 	f := fmt.Sprintf
 	var results []*T
 
@@ -208,7 +208,7 @@ func (g *BasicRepository[T, Q]) FindBefore(ctx context.Context, entity T, before
 	return results, nil
 }
 
-func (g *BasicRepository[T, Q]) FindAfter(ctx context.Context, entity T, after time.Time, limit int) ([]*T, error) {
+func (g *BasicRepository[T, Q]) FindTimeAfter(ctx context.Context, entity T, after time.Time, limit int) ([]*T, error) {
 	f := fmt.Sprintf
 	var results []*T
 
@@ -226,7 +226,7 @@ func (g *BasicRepository[T, Q]) FindAfter(ctx context.Context, entity T, after t
 	return results, nil
 }
 
-func (g *BasicRepository[T, Q]) FindBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error) {
+func (g *BasicRepository[T, Q]) FindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error) {
 	f := fmt.Sprintf
 	var results []*T
 

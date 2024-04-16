@@ -227,7 +227,7 @@ func (s *BasicOperationTestSuite) Test_Like() {
 	assert.Len(s.T(), users, limit)
 }
 
-func (s *BasicOperationTestSuite) Test_FindBefore() {
+func (s *BasicOperationTestSuite) Test_FindTimeBefore() {
 	ctx := context.Background()
 	condition := entity.User{
 		Model: gorm.Model{
@@ -236,16 +236,16 @@ func (s *BasicOperationTestSuite) Test_FindBefore() {
 	}
 	before_at := time.Now()
 
-	s.T().Log("Test_FindBefore: Find users before now with not limit")
-	users, err := s.UserRepository.FindBefore(ctx, condition, before_at, -1)
+	s.T().Log("Test_FindTimeBefore: Find users before now with not limit")
+	users, err := s.UserRepository.FindTimeBefore(ctx, condition, before_at, -1)
 	assert.NoError(s.T(), err)
 	for _, user := range users {
 		assert.True(s.T(), user.Birthday.Before(before_at))
 	}
 
 	limit := 1
-	s.T().Logf("Test_FindBefore: Find users before now with limit %d", limit)
-	users, err = s.UserRepository.FindBefore(ctx, condition, before_at, limit)
+	s.T().Logf("Test_FindTimeBefore: Find users before now with limit %d", limit)
+	users, err = s.UserRepository.FindTimeBefore(ctx, condition, before_at, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)
 	for _, user := range users {
@@ -253,21 +253,21 @@ func (s *BasicOperationTestSuite) Test_FindBefore() {
 	}
 }
 
-func (s *BasicOperationTestSuite) Test_FindAfter() {
+func (s *BasicOperationTestSuite) Test_FindTimeAfter() {
 	ctx := context.Background()
 	condition := entity.User{Birthday: mark.TargetTime}
 	before_at := time.Date(2000, 5, 6, 0, 0, 0, 0, time.UTC)
 
-	s.T().Log("Test_FindAfter: Find users after 2000-05-06 with not limit")
-	users, err := s.UserRepository.FindAfter(ctx, condition, before_at, -1)
+	s.T().Log("Test_FindTimeAfter: Find users after 2000-05-06 with not limit")
+	users, err := s.UserRepository.FindTimeAfter(ctx, condition, before_at, -1)
 	assert.NoError(s.T(), err)
 	for _, user := range users {
 		assert.True(s.T(), user.Birthday.After(before_at))
 	}
 
 	limit := 1
-	s.T().Logf("Test_FindAfter: Find users after 2000-05-06 with limit %d", limit)
-	users, err = s.UserRepository.FindAfter(ctx, condition, before_at, limit)
+	s.T().Logf("Test_FindTimeAfter: Find users after 2000-05-06 with limit %d", limit)
+	users, err = s.UserRepository.FindTimeAfter(ctx, condition, before_at, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)
 	for _, user := range users {
@@ -275,14 +275,14 @@ func (s *BasicOperationTestSuite) Test_FindAfter() {
 	}
 }
 
-func (s *BasicOperationTestSuite) Test_FindBetween() {
+func (s *BasicOperationTestSuite) Test_FindTimeBetween() {
 	ctx := context.Background()
 	condition := entity.User{Birthday: mark.TargetTime}
 	start_at := time.Date(2000, 5, 0, 0, 0, 0, 0, time.UTC)
 	end_at := time.Date(2000, 9, 0, 0, 0, 0, 0, time.UTC)
 
-	s.T().Log("Test_FindBetween: Find users between 2000-05-01 and 2000-09-01 with not limit")
-	users, err := s.UserRepository.FindBetween(ctx, condition, start_at, end_at, -1)
+	s.T().Log("Test_FindTimeBetween: Find users between 2000-05-01 and 2000-09-01 with not limit")
+	users, err := s.UserRepository.FindTimeBetween(ctx, condition, start_at, end_at, -1)
 	assert.NoError(s.T(), err)
 	for _, user := range users {
 		assert.True(s.T(), user.Birthday.After(start_at))
@@ -290,8 +290,8 @@ func (s *BasicOperationTestSuite) Test_FindBetween() {
 	}
 
 	limit := 1
-	s.T().Logf("Test_FindBetween: Find users between 2000-05-01 and 2000-09-01 with limit %d", limit)
-	users, err = s.UserRepository.FindBetween(ctx, condition, start_at, end_at, limit)
+	s.T().Logf("Test_FindTimeBetween: Find users between 2000-05-01 and 2000-09-01 with limit %d", limit)
+	users, err = s.UserRepository.FindTimeBetween(ctx, condition, start_at, end_at, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)
 	for _, user := range users {

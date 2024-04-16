@@ -20,9 +20,9 @@ type Basic[T any, Q Identifier] interface {
 	Delete(ctx context.Context, entity *T) (int64, error)
 	DeleteById(ctx context.Context, id Q) (int64, error)
 	Like(ctx context.Context, entity T, limit int) ([]*T, error)
-	FindBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
-	FindAfter(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
-	FindBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error)
+	FindTimeBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
+	FindTimeAfter(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
+	FindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error)
 }
 
 type Paginated[T any, Q Identifier] interface {

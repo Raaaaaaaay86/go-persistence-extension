@@ -275,6 +275,31 @@ func (s *BasicOperationTestSuite) Test_FindAfter() {
 	}
 }
 
+func (s *BasicOperationTestSuite) Test_FindBetween() {
+	ctx := context.Background()
+	condition := entity.User{Birthday: mark.TargetTime}
+	start_at := time.Date(2000, 5, 0, 0, 0, 0, 0, time.UTC)
+	end_at := time.Date(2000, 9, 0, 0, 0, 0, 0, time.UTC)
+
+	s.T().Log("Test_FindBetween: Find users between 2000-05-01 and 2000-09-01 with not limit")
+	users, err := s.UserRepository.FindBetween(ctx, condition, start_at, end_at, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.True(s.T(), user.Birthday.After(start_at))
+		assert.True(s.T(), user.Birthday.Before(end_at))
+	}
+
+	limit := 1
+	s.T().Logf("Test_FindBetween: Find users between 2000-05-01 and 2000-09-01 with limit %d", limit)
+	users, err = s.UserRepository.FindBetween(ctx, condition, start_at, end_at, limit)
+	assert.NoError(s.T(), err)
+	assert.Len(s.T(), users, limit)
+	for _, user := range users {
+		assert.True(s.T(), user.Birthday.After(start_at))
+		assert.True(s.T(), user.Birthday.Before(end_at))
+	}
+}
+
 func TestRunBasicOperationTestSuite(t *testing.T) {
 	suite.Run(t, new(BasicOperationTestSuite))
 }

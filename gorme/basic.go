@@ -27,7 +27,7 @@ func NewEagerBasicRepository[T any, Q contract.Identifier](db *gorm.DB) *BasicRe
 }
 
 // Create implements contract.CRUD.
-// 
+//
 // Create a new record.
 func (g *BasicRepository[T, Q]) Create(ctx context.Context, entity *T) error {
 	return g.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -130,7 +130,7 @@ func (g *BasicRepository[T, Q]) GetBy(ctx context.Context, entity T) (*T, error)
 // - id: Describe the entity's id to be matched.
 //
 //	// Get user by id equals to 10
-// 	result, err := GetById(ctx, 10)
+//	result, err := GetById(ctx, 10)
 func (g *BasicRepository[T, Q]) GetById(ctx context.Context, id Q) (*T, error) {
 	var result T
 	if err := g.db.First(&result, id).Error; err != nil {
@@ -162,6 +162,7 @@ func (g *BasicRepository[T, Q]) Update(ctx context.Context, entity *T) (int64, e
 
 // Update implements contract.CRUD.
 // Like() will return matched records with like condition.
+//
 //	// Return all rows which username contains "jordan"
 //	results, err := Like(ctx, &User{Username: "jordan"})
 func (g *BasicRepository[T, Q]) Like(ctx context.Context, entity T, limit int) ([]*T, error) {
@@ -219,6 +220,27 @@ func (g *BasicRepository[T, Q]) FindAfter(ctx context.Context, entity T, after t
 	db := g.db.WithContext(ctx)
 
 	if tx := db.Where(f("%s > ?", field.ColumnName), after).Limit(limit).Find(&results); tx.Error != nil {
+		return results, tx.Error
+	}
+
+	return results, nil
+}
+
+func (g *BasicRepository[T, Q]) FindBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error) {
+	f := fmt.Sprintf
+	var results []*T
+
+	field, err := util.ParseTargetField(entity, reflect.TypeOf(time.Time{}))
+	if err != nil {
+		return results, err
+	}
+
+	db := g.db.WithContext(ctx)
+
+	tx := db.Where(f("%s BETWEEN ? AND ?", field.ColumnName), startAt, endAt).
+		Limit(limit).
+		Find(&results)
+	if tx.Error != nil {
 		return results, tx.Error
 	}
 

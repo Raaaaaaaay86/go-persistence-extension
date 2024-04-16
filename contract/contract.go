@@ -22,6 +22,7 @@ type Basic[T any, Q Identifier] interface {
 	Like(ctx context.Context, entity T, limit int) ([]*T, error)
 	FindBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
 	FindAfter(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
+	FindBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error)
 }
 
 type Paginated[T any, Q Identifier] interface {

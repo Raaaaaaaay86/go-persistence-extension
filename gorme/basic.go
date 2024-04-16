@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/raaaaaaaay86/go-persistence-extension/contract"
+	"github.com/raaaaaaaay86/go-persistence-extension/gorme/macro"
+	"github.com/raaaaaaaay86/go-persistence-extension/gorme/macro/operator"
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/util"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -245,4 +247,68 @@ func (g *BasicRepository[T, Q]) FindTimeBetween(ctx context.Context, entity T, s
 	}
 
 	return results, nil
+}
+
+func (g *BasicRepository[T, Q]) FindIntGT(ctx context.Context, entity T, value int, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindIntGTE(ctx context.Context, entity T, value int, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindIntLT(ctx context.Context, entity T, value int, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindIntLTE(ctx context.Context, entity T, value int, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindUintGT(ctx context.Context, entity T, value uint, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindUintGTE(ctx context.Context, entity T, value uint, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindUintLT(ctx context.Context, entity T, value uint, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindUintLTE(ctx context.Context, entity T, value uint, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat64GT(ctx context.Context, entity T, value float64, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat64GTE(ctx context.Context, entity T, value float64, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat64LT(ctx context.Context, entity T, value float64, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat64LTE(ctx context.Context, entity T, value float64, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat32GT(ctx context.Context, entity T, value float32, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat32GTE(ctx context.Context, entity T, value float32, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.GTE, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat32LT(ctx context.Context, entity T, value float32, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LT, limit)
+}
+
+func (g *BasicRepository[T, Q]) FindFloat32LTE(ctx context.Context, entity T, value float32, limit int) ([]*T, error) {
+	return macro.CompareFind(ctx, g.db, entity, value, operator.LTE, limit)
 }

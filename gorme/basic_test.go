@@ -300,6 +300,62 @@ func (s *BasicOperationTestSuite) Test_FindTimeBetween() {
 	}
 }
 
+func (s *BasicOperationTestSuite) Test_FindIntGT() {
+	ctx := context.Background()
+	condition := entity.User{
+		Age: mark.TargetInt,
+	}
+
+	s.T().Log("Test_FindIntGT: Find users with age greater than 21")
+	users, err := s.UserRepository.FindIntGT(ctx, condition, 21, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.Greater(s.T(), int(user.Age), 21)
+	}
+}
+
+func (s *BasicOperationTestSuite) Test_FindIntGTE() {
+	ctx := context.Background()
+	condition := entity.User{
+		Age: mark.TargetInt,
+	}
+
+	s.T().Log("Test_FindIntGTE: Find users with age greater than or equal to 21")
+	users, err := s.UserRepository.FindIntGTE(ctx, condition, 21, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.GreaterOrEqual(s.T(), int(user.Age), 21)
+	}
+}
+
+func (s *BasicOperationTestSuite) Test_FindIntLT() {
+	ctx := context.Background()
+	condition := entity.User{
+		Age: mark.TargetInt,
+	}
+
+	s.T().Log("Test_FindIntLT: Find users with age less than 21")
+	users, err := s.UserRepository.FindIntLT(ctx, condition, 21, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.Less(s.T(), int(user.Age), 21)
+	}
+}
+
+func (s *BasicOperationTestSuite) Test_FindIntLTE() {
+	ctx := context.Background()
+	condition := entity.User{
+		Age: mark.TargetInt,
+	}
+
+	s.T().Log("Test_FindIntLTE: Find users with age less than or equal to 21")
+	users, err := s.UserRepository.FindIntLTE(ctx, condition, 21, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.LessOrEqual(s.T(), int(user.Age), 21)
+	}
+}
+
 func TestRunBasicOperationTestSuite(t *testing.T) {
 	suite.Run(t, new(BasicOperationTestSuite))
 }

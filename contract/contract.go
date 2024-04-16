@@ -23,6 +23,22 @@ type Basic[T any, Q Identifier] interface {
 	FindTimeBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
 	FindTimeAfter(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
 	FindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error)
+	FindIntGT(ctx context.Context, entity T, value int, limit int) ([]*T, error)
+	FindIntGTE(ctx context.Context, entity T, value int, limit int) ([]*T, error)
+	FindIntLT(ctx context.Context, entity T, value int, limit int) ([]*T, error)
+	FindIntLTE(ctx context.Context, entity T, value int, limit int) ([]*T, error)
+	FindUintGT(ctx context.Context, entity T, value uint, limit int) ([]*T, error)
+	FindUintGTE(ctx context.Context, entity T, value uint, limit int) ([]*T, error)
+	FindUintLT(ctx context.Context, entity T, value uint, limit int) ([]*T, error)
+	FindUintLTE(ctx context.Context, entity T, value uint, limit int) ([]*T, error)
+	FindFloat32GT(ctx context.Context, entity T, value float32, limit int) ([]*T, error)
+	FindFloat32GTE(ctx context.Context, entity T, value float32, limit int) ([]*T, error)
+	FindFloat32LT(ctx context.Context, entity T, value float32, limit int) ([]*T, error)
+	FindFloat32LTE(ctx context.Context, entity T, value float32, limit int) ([]*T, error)
+	FindFloat64GT(ctx context.Context, entity T, value float64, limit int) ([]*T, error)
+	FindFloat64GTE(ctx context.Context, entity T, value float64, limit int) ([]*T, error)
+	FindFloat64LT(ctx context.Context, entity T, value float64, limit int) ([]*T, error)
+	FindFloat64LTE(ctx context.Context, entity T, value float64, limit int) ([]*T, error)
 }
 
 type Paginated[T any, Q Identifier] interface {

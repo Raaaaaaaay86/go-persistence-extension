@@ -6,17 +6,20 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 type FieldInformation struct {
-	Name       string
-	ColumnName string
-	Value      any
+	Name        string
+	ColumnName  string
+	Value       any
 	ReflectKind reflect.Kind
 	ReflectType reflect.Type
 }
 
-func ParseTargetField(entity any,targetType reflect.Type) (*FieldInformation, error) {
+func ParseTargetField(entity any, targetType reflect.Type) (*FieldInformation, error) {
 	fields, err := ParseNoneZeroFields(reflect.ValueOf(entity))
 	if err != nil {
 		return nil, err
@@ -54,20 +57,23 @@ func ParseNoneZeroFields(v reflect.Value) ([]*FieldInformation, error) {
 	}
 
 	var infos []*FieldInformation
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		if field.IsZero() {
+	fields, values := FlattenStruct(v)
+	for i := 0; i < len(fields); i++ {
+		field := fields[i]
+		value := values[i]
+
+		if value.IsZero() {
 			continue
 		}
 
 		info := &FieldInformation{
-			Name:  v.Type().Field(i).Name,
-			Value: field.Interface(),
-			ReflectKind: v.Type().Field(i).Type.Kind(),
-			ReflectType: reflect.TypeOf(field.Interface()),
+			Name:        field.Name,
+			Value:       value.Interface(),
+			ReflectKind: field.Type.Kind(),
+			ReflectType: reflect.TypeOf(value.Interface()),
 		}
 
-		tagInfo := ParseGormTag(v.Type().Field(i).Tag.Get("gorm"))
+		tagInfo := ParseGormTag(field.Tag.Get("gorm"))
 		if tagInfo != nil {
 			info.ColumnName = tagInfo.ColumnName
 		} else {
@@ -103,4 +109,37 @@ func ToSnakeCase(str string) string {
 	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
 	return strings.ToLower(snake)
+}
+
+func FlattenStruct(v reflect.Value) ([]*reflect.StructField, []*reflect.Value) {
+	var fields []*reflect.StructField
+	var values []*reflect.Value
+
+	for i := 0; i < v.NumField(); i++ {
+		structField := v.Type().Field(i)
+		value := v.Field(i)
+
+		if !structField.IsExported() {
+			continue
+		}
+
+		if structField.Type.Kind() == reflect.Struct {
+			switch structField.Type.Name() {
+			case reflect.TypeOf(time.Time{}).Name(),
+				reflect.TypeOf(gorm.DeletedAt{}).Name():
+				fields = append(fields, &structField)
+				values = append(values, &value)
+			default:
+				fs, vs := FlattenStruct(v.Field(i))
+				fields = append(fields, fs...)
+				values = append(values, vs...)
+			}
+			continue
+		}
+
+		fields = append(fields, &structField)
+		values = append(values, &value)
+	}
+
+	return fields, values
 }

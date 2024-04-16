@@ -229,10 +229,14 @@ func (s *BasicOperationTestSuite) Test_Like() {
 
 func (s *BasicOperationTestSuite) Test_FindBefore() {
 	ctx := context.Background()
-	condition := entity.User{Birthday: mark.TargetTime}
-	before_at := time.Date(2000, 5, 6, 0, 0, 0, 0, time.UTC)
+	condition := entity.User{
+		Model: gorm.Model{
+			CreatedAt: mark.TargetTime,
+		},
+	}
+	before_at := time.Now()
 
-	s.T().Log("Test_FindBefore: Find users before 2000-05-06 with not limit")
+	s.T().Log("Test_FindBefore: Find users before now with not limit")
 	users, err := s.UserRepository.FindBefore(ctx, condition, before_at, -1)
 	assert.NoError(s.T(), err)
 	for _, user := range users {
@@ -240,7 +244,7 @@ func (s *BasicOperationTestSuite) Test_FindBefore() {
 	}
 
 	limit := 1
-	s.T().Logf("Test_FindBefore: Find users before 2000-05-06 with limit %d", limit)
+	s.T().Logf("Test_FindBefore: Find users before now with limit %d", limit)
 	users, err = s.UserRepository.FindBefore(ctx, condition, before_at, limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)

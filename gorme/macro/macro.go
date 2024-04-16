@@ -22,7 +22,7 @@ func CompareFind[T any, Q contract.Number](
 	f := fmt.Sprintf
 	var results []*T
 
-	var number int
+	var number Q
 	field, err := util.ParseTargetField(entity, reflect.TypeOf(number))
 	if err != nil {
 		return results, err

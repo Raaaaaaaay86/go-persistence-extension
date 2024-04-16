@@ -21,6 +21,7 @@ type Basic[T any, Q Identifier] interface {
 	DeleteById(ctx context.Context, id Q) (int64, error)
 	Like(ctx context.Context, entity T, limit int) ([]*T, error)
 	FindBefore(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
+	FindAfter(ctx context.Context, entity T, before time.Time, limit int) ([]*T, error)
 }
 
 type Paginated[T any, Q Identifier] interface {

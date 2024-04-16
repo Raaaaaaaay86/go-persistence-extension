@@ -206,3 +206,21 @@ func (g *BasicRepository[T, Q]) FindBefore(ctx context.Context, entity T, before
 
 	return results, nil
 }
+
+func (g *BasicRepository[T, Q]) FindAfter(ctx context.Context, entity T, after time.Time, limit int) ([]*T, error) {
+	f := fmt.Sprintf
+	var results []*T
+
+	field, err := util.ParseTargetField(entity, reflect.TypeOf(time.Time{}))
+	if err != nil {
+		return results, err
+	}
+
+	db := g.db.WithContext(ctx)
+
+	if tx := db.Where(f("%s > ?", field.ColumnName), after).Limit(limit).Find(&results); tx.Error != nil {
+		return results, tx.Error
+	}
+
+	return results, nil
+}

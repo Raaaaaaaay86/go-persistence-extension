@@ -245,6 +245,26 @@ func (s *BasicOperationTestSuite) Test_FindBefore() {
 	}
 }
 
+func (s *BasicOperationTestSuite) Test_FindAfter() {
+	ctx := context.Background()
+	condition := entity.User{Birthday: mark.TargetTime}
+	before_at := time.Date(2000, 5, 6, 0, 0, 0, 0, time.UTC)
+
+	users, err := s.UserRepository.FindAfter(ctx, condition, before_at, -1)
+	assert.NoError(s.T(), err)
+	for _, user := range users {
+		assert.True(s.T(), user.Birthday.After(before_at))
+	}
+
+	limit := 1
+	users, err = s.UserRepository.FindAfter(ctx, condition, before_at, limit)
+	assert.NoError(s.T(), err)
+	assert.Len(s.T(), users, limit)
+	for _, user := range users {
+		assert.True(s.T(), user.Birthday.After(before_at))
+	}
+}
+
 func TestRunBasicOperationTestSuite(t *testing.T) {
 	suite.Run(t, new(BasicOperationTestSuite))
 }

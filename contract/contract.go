@@ -11,9 +11,9 @@ type Ultimate[T any, Q Identifier] interface {
 }
 
 type Basic[T any, Q Identifier] interface {
-	GetBy(ctx context.Context, entity T) (*T, error)
+	GetBy(ctx context.Context, query QueryMap) (*T, error)
 	GetById(ctx context.Context, id Q) (*T, error)
-	FindBy(ctx context.Context, entity T, limit int) ([]*T, error)
+	FindBy(ctx context.Context, query QueryMap, limit int) ([]*T, error)
 	FindAll(ctx context.Context, limit int) ([]*T, error)
 	Create(ctx context.Context, entity *T) error
 	Update(ctx context.Context, entity *T) (int64, error)
@@ -63,3 +63,5 @@ func NewPagination[T any](results []T,page int, size int, total int64) *Paginati
 		Results:    results,
 	}
 }
+
+type QueryMap map[string]interface{}

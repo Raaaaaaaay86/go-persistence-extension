@@ -103,9 +103,9 @@ func (g *BasicRepository[T, Q]) FindAll(ctx context.Context, limit int) ([]*T, e
 //	results, err := FindBy(ctx, &user, -1)
 //	// Return matched data with limit with 10
 //	results, err := FindBy(ctx, &user ,10)
-func (g *BasicRepository[T, Q]) FindBy(ctx context.Context, entity T, limit int) ([]*T, error) {
+func (g *BasicRepository[T, Q]) FindBy(ctx context.Context, query contract.QueryMap, limit int) ([]*T, error) {
 	var results []*T
-	if err := g.db.WithContext(ctx).Where(entity).Limit(limit).Find(&results).Error; err != nil {
+	if err := g.db.WithContext(ctx).Where(map[string]interface{}(query)).Limit(limit).Find(&results).Error; err != nil {
 		return nil, err
 	}
 	return results, nil
@@ -119,9 +119,9 @@ func (g *BasicRepository[T, Q]) FindBy(ctx context.Context, entity T, limit int)
 //	result, err := GetBy(ctx, &User{Username: "jordan"})
 //	// This will return any first matched user
 //	result, err := GetBy(ctx, &User{})
-func (g *BasicRepository[T, Q]) GetBy(ctx context.Context, entity T) (*T, error) {
+func (g *BasicRepository[T, Q]) GetBy(ctx context.Context, query contract.QueryMap) (*T, error) {
 	var result T
-	if err := g.db.WithContext(ctx).Where(entity).First(&result).Error; err != nil {
+	if err := g.db.WithContext(ctx).Where(map[string]interface{}(query)).First(&result).Error; err != nil {
 		return &result, err
 	}
 	return &result, nil

@@ -55,14 +55,16 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 
 	type GetByTestCase struct {
 		TestDescription string
-		Condition       entity.User
+		QueryMapper       entity.UserQueryMapper
 		ValidateFn      func(*testing.T, *entity.User, error)
 	}
 
 	table := []GetByTestCase{
 		{
 			TestDescription: "Get user by birthday",
-			Condition:       entity.User{Birthday: time.Date(2000, 3, 3, 0, 0, 0, 0, time.UTC)},
+			QueryMapper:       entity.UserQueryMapper{
+				Birthday: &[]time.Time{time.Date(2000, 3, 3, 0, 0, 0, 0, time.UTC)}[0],
+			},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -71,7 +73,9 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get user by username",
-			Condition:       entity.User{Username: "user1"},
+			QueryMapper:       entity.UserQueryMapper{
+				Username: &[]string{"user1"}[0],
+			},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -80,7 +84,9 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get user by age",
-			Condition:       entity.User{Age: 20},
+			QueryMapper:       entity.UserQueryMapper{
+				Age: &[]int{20}[0],
+			},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -89,7 +95,10 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get user by age and username",
-			Condition:       entity.User{Age: 20, Username: "user1"},
+			QueryMapper:       entity.UserQueryMapper{
+				Age: &[]int{20}[0],
+				Username: &[]string{"user1"}[0],
+			},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.NoError(t, err)
 				assert.Equal(t, uint(1), user.ID)
@@ -98,7 +107,9 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 		},
 		{
 			TestDescription: "Get non-exist user by username",
-			Condition:       entity.User{Username: "non-exist"},
+			QueryMapper:       entity.UserQueryMapper{
+				Username: &[]string{"non-exist"}[0],
+			},
 			ValidateFn: func(t *testing.T, user *entity.User, err error) {
 				assert.ErrorIs(t, gorm.ErrRecordNotFound, err)
 			},
@@ -107,7 +118,7 @@ func (s *BasicOperationTestSuite) Test_GetBy() {
 
 	for _, tc := range table {
 		s.T().Logf("Test_GetBy: %s", tc.TestDescription)
-		user, err := s.UserRepository.GetBy(ctx, tc.Condition)
+		user, err := s.UserRepository.GetBy(ctx, tc.QueryMapper.ToMap())
 		tc.ValidateFn(s.T(), user, err)
 	}
 }
@@ -116,7 +127,7 @@ func (s *BasicOperationTestSuite) Test_FindBy() {
 	ctx := context.Background()
 
 	s.T().Log("Test_FindBy: Find users by age 20 with no limit")
-	users, err := s.UserRepository.FindBy(ctx, entity.User{Age: 20}, -1)
+	users, err := s.UserRepository.FindBy(ctx, entity.UserQueryMapper{Age: &[]int{20}[0]}.ToMap(), -1)
 	assert.NoError(s.T(), err)
 	expectedUserNames := []string{"user1", "user3", "user6", "user8", "user10"}
 	for _, user := range users {
@@ -126,12 +137,12 @@ func (s *BasicOperationTestSuite) Test_FindBy() {
 
 	s.T().Log("Test_FindBy: Find users by age 20 with limit 1")
 	limit := 1
-	users, err = s.UserRepository.FindBy(ctx, entity.User{Age: 20}, limit)
+	users, err = s.UserRepository.FindBy(ctx, entity.UserQueryMapper{Age: &[]int{20}[0]}.ToMap(), limit)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, limit)
 
 	s.T().Log("Test_FindBy: Find users by age 100 with no limit")
-	users, err = s.UserRepository.FindBy(ctx, entity.User{Age: 100}, -1)
+	users, err = s.UserRepository.FindBy(ctx, entity.UserQueryMapper{Age: &[]int{100}[0]}.ToMap(), -1)
 	assert.NoError(s.T(), err)
 	assert.Len(s.T(), users, 0)
 }

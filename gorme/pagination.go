@@ -2,8 +2,11 @@ package gorme
 
 import (
 	"context"
+	"time"
 
 	"github.com/raaaaaaaay86/go-persistence-extension/contract"
+	"github.com/raaaaaaaay86/go-persistence-extension/gorme/macro"
+	"github.com/raaaaaaaay86/go-persistence-extension/gorme/macro/operator"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -23,15 +26,15 @@ func NewEagerPaginationRepository[T any, Q contract.Identifier](db *gorm.DB) *Pa
 }
 
 // FindAll implements contract.Pagination.
-// 
+//
 // PFindAll() will return all records with pagination.
 func (p *PaginationRepository[T, Q]) PFindAll(
-	ctx context.Context, 
-	page int, 
+	ctx context.Context,
+	page int,
 	pageSize int,
 ) (*contract.Pagination[T], error) {
 	var results []T
-	offset := p.offset(page, pageSize)
+	offset := macro.Offset(page, pageSize)
 	if err := p.db.Offset(offset).Limit(pageSize).Find(&results).Error; err != nil {
 		return nil, err
 	}
@@ -49,13 +52,13 @@ func (p *PaginationRepository[T, Q]) PFindAll(
 //
 // PFindBy() will return matched records with pagination.
 func (p *PaginationRepository[T, Q]) PFindBy(
-	ctx context.Context, 
-	query contract.QueryMap, 
-	page int, 
+	ctx context.Context,
+	query contract.QueryMap,
+	page int,
 	pageSize int,
 ) (*contract.Pagination[T], error) {
 	var results []T
-	offset := p.offset(page, pageSize)
+	offset := macro.Offset(page, pageSize)
 	if err := p.db.Offset(offset).Limit(pageSize).Where(map[string]interface{}(query)).Find(&results).Error; err != nil {
 		return nil, err
 	}
@@ -69,6 +72,10 @@ func (p *PaginationRepository[T, Q]) PFindBy(
 	return contract.NewPagination(results, page, pageSize, total), nil
 }
 
-func (p *PaginationRepository[T, Q]) offset(page int, pageSize int) int {
-	return (page - 1) * pageSize
+func (p *PaginationRepository[T, Q]) PFindTimeBefore(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
+	return macro.PFindByTime[T, Q](ctx, p.db, operator.LT, entity, before, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindTimeAfter(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
+	return macro.PFindByTime[T, Q](ctx, p.db, operator.GT, entity, before, page, pageSize)
 }

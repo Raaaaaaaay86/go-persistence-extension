@@ -44,6 +44,25 @@ type Basic[T any, Q Identifier] interface {
 type Paginated[T any, Q Identifier] interface {
 	PFindBy(ctx context.Context, query QueryMap, page int, pageSize int) (*Pagination[T], error)
 	PFindAll(ctx context.Context, page int, pageSize int) (*Pagination[T], error)
+	PFindTimeBefore(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*Pagination[T], error)
+	PFindTimeAfter(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*Pagination[T], error)
+	// PFindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, page int, pageSize int) ([]*T, error)
+	// PFindIntGT(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)
+	// PFindIntGTE(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)
+	// PFindIntLT(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)
+	// PFindIntLTE(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)
+	// PFindUintGT(ctx context.Context, entity T, value uint, page int, pageSize int) ([]*T, error)
+	// PFindUintGTE(ctx context.Context, entity T, value uint, page int, pageSize int) ([]*T, error)
+	// PFindUintLT(ctx context.Context, entity T, value uint, page int, pageSize int) ([]*T, error)
+	// PFindUintLTE(ctx context.Context, entity T, value uint, page int, pageSize int) ([]*T, error)
+	// PFindFloat32GT(ctx context.Context, entity T, value float32, page int, pageSize int) ([]*T, error)
+	// PFindFloat32GTE(ctx context.Context, entity T, value float32, page int, pageSize int) ([]*T, error)
+	// PFindFloat32LT(ctx context.Context, entity T, value float32, page int, pageSize int) ([]*T, error)
+	// PFindFloat32LTE(ctx context.Context, entity T, value float32, page int, pageSize int) ([]*T, error)
+	// PFindFloat64GT(ctx context.Context, entity T, value float64, page int, pageSize int) ([]*T, error)
+	// PFindFloat64GTE(ctx context.Context, entity T, value float64, page int, pageSize int) ([]*T, error)
+	// PFindFloat64LT(ctx context.Context, entity T, value float64, page int, pageSize int) ([]*T, error)
+	// PFindFloat64LTE(ctx context.Context, entity T, value float64, page int, pageSize int) ([]*T, error)
 }
 
 type Pagination[T any] struct {
@@ -62,6 +81,10 @@ func NewPagination[T any](results []T,page int, size int, total int64) *Paginati
 		TotalCount: total,
 		Results:    results,
 	}
+}
+
+func (p *Pagination[T]) HasNext() bool {
+	return p.Page < p.TotalPage
 }
 
 type QueryMap map[string]interface{}

@@ -130,3 +130,165 @@ func (p *PaginationRepository[T,
 
 	return contract.NewPagination(results, page, pageSize, total), nil
 }
+
+func (p *PaginationRepository[T, Q]) PFindIntGT(
+	ctx context.Context,
+	entity T,
+	value int,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindIntGTE(
+	ctx context.Context,
+	entity T,
+	value int,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T],
+	error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindIntLT(
+	ctx context.Context,
+	entity T,
+	value int,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindIntLTE(
+	ctx context.Context,
+	entity T,
+	value int,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T],
+	error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindUintGT(
+	ctx context.Context,
+	entity T,
+	value uint,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindUintGTE(
+	ctx context.Context,
+	entity T,
+	value uint,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindUintLT(
+	ctx context.Context,
+	entity T,
+	value uint,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindUintLTE(
+	ctx context.Context,
+	entity T,
+	value uint,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat32GT(
+	ctx context.Context,
+	entity T,
+	value float32,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat32GTE(
+	ctx context.Context,
+	entity T,
+	value float32,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat32LT(
+	ctx context.Context,
+	entity T,
+	value float32,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat32LTE(
+	ctx context.Context,
+	entity T,
+	value float32,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat64GT(
+	ctx context.Context,
+	entity T,
+	value float64,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat64GTE(
+	ctx context.Context,
+	entity T,
+	value float64,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.GTE, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat64LT(
+	ctx context.Context,
+	entity T,
+	value float64,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LT, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindFloat64LTE(
+	ctx context.Context,
+	entity T,
+	value float64,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	return macro.ComparePFind(ctx, p.db, entity, value, operator.LTE, page, pageSize)
+}

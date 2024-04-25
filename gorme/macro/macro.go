@@ -41,6 +41,46 @@ func CompareFind[T any, Q contract.Number](
 	return results, nil
 }
 
+func ComparePFind[T any, Q contract.Number](
+	ctx context.Context,
+	db *gorm.DB,
+	entity T,
+	value Q,
+	operator operator.Enum,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
+	f := fmt.Sprintf
+	var results []T
+
+	var number Q
+	field, err := util.ParseTargetField(entity, reflect.TypeOf(number))
+	if err != nil {
+		return nil, err
+	}
+
+	tx := db.
+		WithContext(ctx).
+		Offset(Offset(page, pageSize)).
+		Where(f("%s %s ?", field.ColumnName, operator), value).
+		Limit(pageSize).
+		Find(&results)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var total int64
+	tx = db.WithContext(ctx).
+		Model(entity).
+		Where(f("%s %s ?", field.ColumnName, operator), value).
+		Count(&total)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	return contract.NewPagination(results, page, pageSize, total), nil
+}
+
 func PFindByTime[T any, Q contract.Identifier](
 	ctx context.Context,
 	db *gorm.DB,

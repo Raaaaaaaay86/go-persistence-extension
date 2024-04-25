@@ -2,6 +2,7 @@ package gorme_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -109,6 +110,118 @@ func (s *PaginationOperationTestSuite) TestPFindTimeBetween() {
 			s.T().Logf("birthday %v should between %v and %v", user.Birthday, startAt, endAt)
 			assert.True(s.T(), user.Birthday.After(startAt))
 			assert.True(s.T(), user.Birthday.Before(endAt))
+		}
+
+		if !pagination.HasNext() {
+			break
+		}
+
+		currentPage++
+	}
+}
+
+func (s *PaginationOperationTestSuite) TestPFindIntGT() {
+	s.T().Log("Test_TestPFindIntGT: start")
+
+	currentPage := 1
+	for {
+		target := entity.User{
+			Age: mark.TargetInt,
+		}
+
+		greaterThan := 22
+		pagination, err := s.UserRepository.PFindIntGT(context.Background(), target, greaterThan, currentPage, 1)
+		if err != nil {
+			s.T().Fatalf("Test_TestPFindIntGT: failed (%s)", err.Error())
+		}
+
+		for _, user := range pagination.Results {
+			fmt.Println(user.Age)
+			assert.Greater(s.T(), user.Age, greaterThan)
+		}
+
+		if !pagination.HasNext() {
+			break
+		}
+
+		currentPage++
+	}
+}
+
+func (s *PaginationOperationTestSuite) TestPFindIntGTE() {
+	s.T().Log("Test_TestPFindIntGTE: start")
+
+	currentPage := 1
+	for {
+		target := entity.User{
+			Age: mark.TargetInt,
+		}
+
+		greaterThan := 23
+		pagination, err := s.UserRepository.PFindIntGTE(context.Background(), target, greaterThan, currentPage, 1)
+		if err != nil {
+			s.T().Fatalf("Test_TestPFindIntGTE: failed (%s)", err.Error())
+		}
+
+		for _, user := range pagination.Results {
+			fmt.Println(user.Age)
+			assert.GreaterOrEqual(s.T(), user.Age, greaterThan)
+		}
+
+		if !pagination.HasNext() {
+			break
+		}
+
+		currentPage++
+	}
+}
+
+func (s *PaginationOperationTestSuite) TestPFindIntLT() {
+	s.T().Log("Test_TestPFindIntLT: start")
+
+	currentPage := 1
+	for {
+		target := entity.User{
+			Age: mark.TargetInt,
+		}
+
+		greaterThan := 23
+		pagination, err := s.UserRepository.PFindIntLT(context.Background(), target, greaterThan, currentPage, 1)
+		if err != nil {
+			s.T().Fatalf("Test_TestPFindIntLT: failed (%s)", err.Error())
+		}
+
+		for _, user := range pagination.Results {
+			fmt.Println(user.Age)
+			assert.Less(s.T(), user.Age, greaterThan)
+		}
+
+		if !pagination.HasNext() {
+			break
+		}
+
+		currentPage++
+	}
+}
+
+func (s *PaginationOperationTestSuite) TestPFindIntLTE() {
+	s.T().Log("Test_TestPFindIntLTE: start")
+
+	currentPage := 1
+	for {
+		target := entity.User{
+			Age: mark.TargetInt,
+		}
+
+		greaterThan := 23
+		pagination, err := s.UserRepository.PFindIntLTE(context.Background(), target, greaterThan, currentPage, 1)
+		if err != nil {
+			s.T().Fatalf("Test_TestPFindIntLTE: failed (%s)", err.Error())
+		}
+
+		for _, user := range pagination.Results {
+			fmt.Println(user.Age)
+			assert.LessOrEqual(s.T(), user.Age, greaterThan)
 		}
 
 		if !pagination.HasNext() {

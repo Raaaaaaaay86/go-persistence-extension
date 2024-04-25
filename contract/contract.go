@@ -46,7 +46,7 @@ type Paginated[T any, Q Identifier] interface {
 	PFindAll(ctx context.Context, page int, pageSize int) (*Pagination[T], error)
 	PFindTimeBefore(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*Pagination[T], error)
 	PFindTimeAfter(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*Pagination[T], error)
-	// PFindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, page int, pageSize int) ([]*T, error)
+	PFindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, page int, pageSize int) (*Pagination[T], error)
 	// PFindIntGT(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)
 	// PFindIntGTE(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)
 	// PFindIntLT(ctx context.Context, entity T, value int, page int, pageSize int) ([]*T, error)

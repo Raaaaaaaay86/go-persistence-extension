@@ -2,11 +2,14 @@ package gorme
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/raaaaaaaay86/go-persistence-extension/contract"
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/macro"
 	"github.com/raaaaaaaay86/go-persistence-extension/gorme/macro/operator"
+	"github.com/raaaaaaaay86/go-persistence-extension/gorme/util"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -78,4 +81,30 @@ func (p *PaginationRepository[T, Q]) PFindTimeBefore(ctx context.Context, entity
 
 func (p *PaginationRepository[T, Q]) PFindTimeAfter(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
 	return macro.PFindByTime[T, Q](ctx, p.db, operator.GT, entity, before, page, pageSize)
+}
+
+func (p *PaginationRepository[T, Q]) PFindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
+	f := fmt.Sprintf
+	var results []T
+
+	field, err := util.ParseTargetField(entity, reflect.TypeOf(time.Time{}))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := p.db.
+		WithContext(ctx).
+		Offset(macro.Offset(page, pageSize)).
+		Limit(pageSize).
+		Where(f("%s > ? AND %s < ?", field.ColumnName, field.ColumnName), startAt, endAt).
+		Find(&results).Error; err != nil {
+		return nil, err
+	}
+
+	total, err := macro.TotalCount[T](ctx, p.db, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	return contract.NewPagination(results, page, pageSize, total), nil
 }

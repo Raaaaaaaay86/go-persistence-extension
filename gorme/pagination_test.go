@@ -45,7 +45,7 @@ func (s *PaginationOperationTestSuite) TestPFindTimeBefore() {
 		}
 		beforeAt := time.Date(2000, 8, 1, 0, 0, 0, 0, time.UTC)
 
-		pagination, err := s.UserRepository.PFindTimeBefore(context.Background(), target, beforeAt, currentPage, 10)
+		pagination, err := s.UserRepository.PFindTimeBefore(context.Background(), target, beforeAt, currentPage, 1)
 		if err != nil {
 			s.T().Fatalf("Test_PFindTimeBefore: failed (%s)", err.Error())
 		}
@@ -72,7 +72,7 @@ func (s *PaginationOperationTestSuite) TestPFindTimeAfter() {
 		}
 		beforeAt := time.Date(2000, 8, 1, 0, 0, 0, 0, time.UTC)
 
-		pagination, err := s.UserRepository.PFindTimeAfter(context.Background(), target, beforeAt, currentPage, 10)
+		pagination, err := s.UserRepository.PFindTimeAfter(context.Background(), target, beforeAt, currentPage, 1)
 		if err != nil {
 			s.T().Fatalf("Test_PFindTimeAfter: failed (%s)", err.Error())
 		}
@@ -80,6 +80,35 @@ func (s *PaginationOperationTestSuite) TestPFindTimeAfter() {
 		for _, user := range pagination.Results {
 			s.T().Logf("birthday %v should after %v", user.Birthday, beforeAt)
 			assert.True(s.T(), user.Birthday.After(beforeAt))
+		}
+
+		if !pagination.HasNext() {
+			break
+		}
+
+		currentPage++
+	}
+}
+
+func (s *PaginationOperationTestSuite) TestPFindTimeBetween() {
+	s.T().Log("Test_TestPFindTimeBetween: start")
+	currentPage := 1
+	for {
+		target := entity.User{
+			Birthday: mark.TargetTime,
+		}
+		startAt := time.Date(2000, 6, 1, 0, 0, 0, 0, time.UTC)
+		endAt := time.Date(2000, 10, 1, 0, 0, 0, 0, time.UTC)
+
+		pagination, err := s.UserRepository.PFindTimeBetween(context.Background(), target, startAt, endAt, currentPage, 1)
+		if err != nil {
+			s.T().Fatalf("Test_TestPFindTimeBetween: failed (%s)", err.Error())
+		}
+
+		for _, user := range pagination.Results {
+			s.T().Logf("birthday %v should between %v and %v", user.Birthday, startAt, endAt)
+			assert.True(s.T(), user.Birthday.After(startAt))
+			assert.True(s.T(), user.Birthday.Before(endAt))
 		}
 
 		if !pagination.HasNext() {

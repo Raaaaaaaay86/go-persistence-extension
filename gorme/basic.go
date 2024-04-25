@@ -228,7 +228,13 @@ func (g *BasicRepository[T, Q]) FindTimeAfter(ctx context.Context, entity T, aft
 	return results, nil
 }
 
-func (g *BasicRepository[T, Q]) FindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, limit int) ([]*T, error) {
+func (g *BasicRepository[T, Q]) FindTimeBetween(
+	ctx context.Context,
+	entity T,
+	startAt time.Time,
+	endAt time.Time,
+	limit int,
+) ([]*T, error) {
 	f := fmt.Sprintf
 	var results []*T
 

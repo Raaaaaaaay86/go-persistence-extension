@@ -61,8 +61,11 @@ func (p *PaginationRepository[T, Q]) PFindBy(
 	pageSize int,
 ) (*contract.Pagination[T], error) {
 	var results []T
-	offset := macro.Offset(page, pageSize)
-	if err := p.db.Offset(offset).Limit(pageSize).Where(map[string]interface{}(query)).Find(&results).Error; err != nil {
+	if err := p.db.
+		Offset(macro.Offset(page, pageSize)).
+		Limit(pageSize).
+		Where(map[string]interface{}(query)).
+		Find(&results).Error; err != nil {
 		return nil, err
 	}
 
@@ -75,15 +78,34 @@ func (p *PaginationRepository[T, Q]) PFindBy(
 	return contract.NewPagination(results, page, pageSize, total), nil
 }
 
-func (p *PaginationRepository[T, Q]) PFindTimeBefore(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
+func (p *PaginationRepository[T, Q]) PFindTimeBefore(
+	ctx context.Context,
+	entity T,
+	before time.Time,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
 	return macro.PFindByTime[T, Q](ctx, p.db, operator.LT, entity, before, page, pageSize)
 }
 
-func (p *PaginationRepository[T, Q]) PFindTimeAfter(ctx context.Context, entity T, before time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
+func (p *PaginationRepository[T,
+	Q]) PFindTimeAfter(ctx context.Context,
+	entity T,
+	before time.Time,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
 	return macro.PFindByTime[T, Q](ctx, p.db, operator.GT, entity, before, page, pageSize)
 }
 
-func (p *PaginationRepository[T, Q]) PFindTimeBetween(ctx context.Context, entity T, startAt time.Time, endAt time.Time, page int, pageSize int) (*contract.Pagination[T], error) {
+func (p *PaginationRepository[T,
+	Q]) PFindTimeBetween(ctx context.Context,
+	entity T,
+	startAt time.Time,
+	endAt time.Time,
+	page int,
+	pageSize int,
+) (*contract.Pagination[T], error) {
 	f := fmt.Sprintf
 	var results []T
 

@@ -58,8 +58,11 @@ func PFindByTime[T any, Q contract.Identifier](
 		return nil, err
 	}
 
-	offset := Offset(page, pageSize)
-	if err := db.Offset(offset).Limit(pageSize).Where(f("%s %s ?", field.ColumnName, operator), before).Find(&results).Error; err != nil {
+	if err := db.
+		Offset(Offset(page, pageSize)).
+		Limit(pageSize).
+		Where(f("%s %s ?", field.ColumnName, operator), before).
+		Find(&results).Error; err != nil {
 		return nil, err
 	}
 

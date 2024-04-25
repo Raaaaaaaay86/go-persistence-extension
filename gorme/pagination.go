@@ -50,16 +50,17 @@ func (p *PaginationRepository[T, Q]) PFindAll(
 // PFindBy() will return matched records with pagination.
 func (p *PaginationRepository[T, Q]) PFindBy(
 	ctx context.Context, 
-	entity T, 
+	query contract.QueryMap, 
 	page int, 
 	pageSize int,
 ) (*contract.Pagination[T], error) {
 	var results []T
 	offset := p.offset(page, pageSize)
-	if err := p.db.Offset(offset).Limit(pageSize).Where(entity).Find(&results).Error; err != nil {
+	if err := p.db.Offset(offset).Limit(pageSize).Where(map[string]interface{}(query)).Find(&results).Error; err != nil {
 		return nil, err
 	}
 
+	var entity T
 	var total int64
 	if err := p.db.Model(entity).Count(&total).Error; err != nil {
 		return nil, err

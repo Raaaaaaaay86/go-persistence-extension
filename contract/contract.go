@@ -42,7 +42,7 @@ type Basic[T any, Q Identifier] interface {
 }
 
 type Paginated[T any, Q Identifier] interface {
-	PFindBy(ctx context.Context, entity T, page int, pageSize int) (*Pagination[T], error)
+	PFindBy(ctx context.Context, query QueryMap, page int, pageSize int) (*Pagination[T], error)
 	PFindAll(ctx context.Context, page int, pageSize int) (*Pagination[T], error)
 }
 
